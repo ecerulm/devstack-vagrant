@@ -11,7 +11,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #config.vm.box_url =   'https://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box'
 
 
-  config.vm.network "forwarded_port", guest: 80, host: 8081
+  config.vbguest.auto_update = false
+  config.vm.network "forwarded_port", guest: 80, host: 8082
 
   config.vm.provider "virtualbox" do |vb|
     # Don't boot with headless mode
@@ -24,6 +25,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
 $script=<<SCRIPT
+apt-get -y update
 apt-get -y install git
 apt-get -y install dos2unix
 apt-get -y install vim
@@ -40,7 +42,6 @@ git clone https://github.com/openstack-dev/devstack.git
 cp /vagrant/local.conf /home/vagrant/devstack/local.conf
 dos2unix /home/vagrant/devstack/local.conf # make sure that is a unix file
 cd /home/vagrant/devstack
-git checkout grizzly-eol
 SCRIPT
 config.vm.provision "shell" do |s|
   s.inline = $script
